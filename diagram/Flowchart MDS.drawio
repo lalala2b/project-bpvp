@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-11-08T01:59:38.701Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="qiO6FZ-SHhLyDWi5Bael" version="22.0.8" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-08T02:40:07.958Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="GDCaDV-Bpj0LeJOHa493" version="22.0.8" type="github">
   <diagram name="Page-1" id="aHBTTGxstkMjOlrfVOju">
-    <mxGraphModel dx="1518" dy="675" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1500" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="300" pageHeight="700" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,13 +8,13 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-2" value="Start" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="375" y="10" width="100" height="60" as="geometry" />
+          <mxGeometry x="250" y="40" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XB6f-WpCVGhrMiFMidnd-3" target="XB6f-WpCVGhrMiFMidnd-20">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-3" value="Baca keadaan Switch magnet" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="378" y="120" width="95" height="50" as="geometry" />
+          <mxGeometry x="253" y="150" width="95" height="50" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="XB6f-WpCVGhrMiFMidnd-7" target="XB6f-WpCVGhrMiFMidnd-3">
           <mxGeometry relative="1" as="geometry" />
@@ -26,7 +26,7 @@
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XB6f-WpCVGhrMiFMidnd-7" target="XB6f-WpCVGhrMiFMidnd-23">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="360" as="targetPoint" />
+            <mxPoint x="475" y="390" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-18" value="True" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="XB6f-WpCVGhrMiFMidnd-12">
@@ -35,24 +35,24 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-7" value="Switch == HIGH" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="375" y="296" width="100" height="100" as="geometry" />
+          <mxGeometry x="250" y="326" width="100" height="100" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-13" value="Selesai" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="375" y="536" width="100" height="60" as="geometry" />
+          <mxGeometry x="250" y="566" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="XB6f-WpCVGhrMiFMidnd-23" target="XB6f-WpCVGhrMiFMidnd-13">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="600" y="530" as="sourcePoint" />
+            <mxPoint x="475" y="560" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-20" value="Boolean" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
-          <mxGeometry x="385.5" y="200" width="80" height="50" as="geometry" />
+          <mxGeometry x="260.5" y="230" width="80" height="50" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="XB6f-WpCVGhrMiFMidnd-20" target="XB6f-WpCVGhrMiFMidnd-7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XB6f-WpCVGhrMiFMidnd-23" value="Buzzer On" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
-          <mxGeometry x="376" y="440" width="100" height="60" as="geometry" />
+          <mxGeometry x="251" y="470" width="100" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
