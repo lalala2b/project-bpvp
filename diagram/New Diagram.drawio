@@ -1,17 +1,9 @@
-<mxfile host="app.diagrams.net" modified="2023-11-08T00:23:39.536Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="Lpgf53iyll6gxkX9SqRm" version="22.0.8" type="github">
+<mxfile host="app.diagrams.net" modified="2023-11-08T01:46:40.520Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="bPls9irtWC31OYDpyHzA" version="22.0.8" type="github">
   <diagram name="Page-1" id="HApkWI6-aUnR0YJSj3VK">
-    <mxGraphModel dx="1235" dy="675" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1290" dy="574" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="M7h0rrMAaYI95qsz9Wyr-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="1" source="aZVy_YJEkJ1AmMruKeH3-1" target="M7h0rrMAaYI95qsz9Wyr-4" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="425" y="330" />
-              <mxPoint x="384" y="330" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
         <mxCell id="M7h0rrMAaYI95qsz9Wyr-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="aZVy_YJEkJ1AmMruKeH3-1" target="M7h0rrMAaYI95qsz9Wyr-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -79,7 +71,7 @@
           <mxGeometry x="254" y="360" width="76" height="76" as="geometry" />
         </mxCell>
         <mxCell id="M7h0rrMAaYI95qsz9Wyr-4" value="Smartphone" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://cdn1-production-images-kly.akamaized.net/zKOw6xDFqjIETG-zg2RswCUy-Qk=/0x0:0x0/640x853/filters:quality(75):strip_icc():format(webp):watermark(kly-media-production/assets/images/watermarks/liputan6/watermark-gray-portrait-new.png,540,20,0)/kly-media-production/medias/3148864/original/066792100_1591777467-Ilustrasi_Smartphone_Android__2_.jpg;imageBorder=default;" parent="1" vertex="1">
-          <mxGeometry x="343" y="355" width="82.5" height="110" as="geometry" />
+          <mxGeometry x="20" y="400" width="82.5" height="110" as="geometry" />
         </mxCell>
         <mxCell id="M7h0rrMAaYI95qsz9Wyr-7" value="Lampu" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://d2xjmi1k71iy2m.cloudfront.net/dairyfarm/id/images/888/0988838_PE818254_S4.webp;imageBorder=default;" parent="1" vertex="1">
           <mxGeometry x="440" y="360" width="76" height="76" as="geometry" />
