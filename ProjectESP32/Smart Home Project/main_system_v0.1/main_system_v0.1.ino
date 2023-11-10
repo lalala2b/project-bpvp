@@ -1,5 +1,21 @@
 // Library
 #include <DHT.h>
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <CTBot.h>
+#include <ArduinoJson.h>
+
+// Setup koneksi WiFi
+const char* ssid = "lalala";
+const char* pass = "00000000";
+
+WiFiClientSecure client;
+
+// Setup telegram bot
+#define BOTtoken "6741323250:AAF6Ag62a6mbxs0IsmN9IcCF2NB4FSE6xDw"
+#define user_id 5194206843
+
+CTBot bot;
 
 // Pin Sensor
 #define MQ2PIN 14 // Sensor MQ2 Digital
@@ -26,6 +42,8 @@ void setup() {
 
   // Setup
   dht.begin();
+  bot.wifiConnect(ssid,pass);
+  bot.setTelegramToken(BOTtoken);
 
   // Mode Pin INPUT
   pinMode(MQ2PIN, INPUT); // Sensor MQ2
@@ -44,6 +62,12 @@ void setup() {
   // Setup MQ2
   delay(20000);
   Serial.println("Sensor MQ2 siap");
+
+  if (bot.testConnection()){
+		Serial.println("\nConnecting success");
+  }else {
+		Serial.println("\nConnecting fail, please reset");
+  }
 }
 
 void loop() {
@@ -115,5 +139,24 @@ void loop() {
   }
 
   Serial.println();
+  
+  // Setting Telegram
+  TBMessage msg;
+
+  if (CTBotMessageText == bot.getNewMessage(msg)){
+    if (msg.sender.id == user_id){
+      if (msg.text.equals("/start")){
+        bot.sendMessage(user_id, "Welcome");
+      }
+      if (msg.text.equals("/cek_suhu")){
+        String pesanSuhu = "Suhu: "+String(temp);
+        pesanSuhu += "\nKelembapan: "+String(hum);
+        bot.sendMessage(user_id, pesanSuhu);
+      }
+    }else {
+      bot.sendMessage(msg.sender.id, "Not authorize, your id is "+String(msg.sender.id));
+    }
+  }
+
   delay(1000);
 }
