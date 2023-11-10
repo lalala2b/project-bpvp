@@ -1,90 +1,119 @@
 // Library
 #include <DHT.h>
 
-#define DHTPin 27
-#define DHTType 11
-DHT dht(DHTPin, DHTType);
+// Pin Sensor
+#define MQ2PIN 14 // Sensor MQ2 Digital
+#define sensorApi 27 // Sensor Api
+#define DHTPIN 26 // Sensor DHT11
+#define LDRPIN 34 // Sensor LDR Cahaya
+#define MagnetSw1 25 // Magnet Switch 1
 
-// Magnet switch
-// #define magnetSw1 
+// Pin Output
+#define alarmMQ2 15 // Alarm Gas MQ2
+#define alarmApi 2 // Alarm Api
+#define alarmSw 23 // Alarm Magnet Switch
 
-// Sensor Gas MQ2  SENSOR GAS MASIH BELUM MASUK
-//#define sensorMQ2 13
+#define pinKipas 4 // Kipas
 
-// Buzzer pin
-#define buzzer 5
+#define lampuHal 5 // Lampu Halaman
 
-// Lampu menggunakan LDR
-#define LDR 34
-const int sensorMin=0;
-const int sensorMax=1024;
-  
-// PIN Lampu
-#define lampu1 18
-#define lampu2 19
+// Variable
+#define DHTType DHT11
+DHT dht(DHTPIN,DHTType);
 
-// Sensor Api
-#define sensorApi 35
-
-void setup(){
+void setup() {
   Serial.begin(9600);
 
-  // lampu LDR
-  pinMode(lampu1,OUTPUT);
-  pinMode(lampu2,OUTPUT);
-  pinMode(buzzer,OUTPUT);
-  pinMode(sensorMQ2,INPUT);
-
-  // dht
+  // Setup
   dht.begin();
+
+  // Mode Pin INPUT
+  pinMode(MQ2PIN, INPUT); // Sensor MQ2
+  pinMode(sensorApi, INPUT); // Sensor Api
+  pinMode(MagnetSw1, INPUT);
+
+  // Mode Pin OUTPUT
+  pinMode(alarmMQ2, OUTPUT); // ALARM MQ2 GAS
+  pinMode(alarmApi, OUTPUT); // ALARM API
+  pinMode(alarmSw, OUTPUT);
+
+  pinMode(pinKipas, OUTPUT); // KIPAS ANGIN
+
+  pinMode(lampuHal, OUTPUT); // Lampu Halaman
+
+  // Setup MQ2
+  delay(20000);
+  Serial.println("Sensor MQ2 siap");
 }
 
-void loop(){
-  delay(1000);
-
-  // Sensor Api
-  int nilaiApi = analogRead(35);
-  Serial.println("Api: "+String(nilaiApi));
-  int range = map(nilaiApi, sensorMin, sensorMax, 0, 3);
-  Serial.println("Range: "+String(range));
-  Serial.println();
-  if (nilaiApi<2000);
-    digitalWrite(buzzer,HIGH);
-  }else {
-    digitalWrite(buzzer,LOW);
+void loop() {
+  // Pembacaan sensor MQ2
+  int keadaanGas = digitalRead(MQ2PIN);
+  Serial.println("Keadaan Sensor Gas");
+  if (keadaanGas == HIGH){
+    Serial.println("Tidak ada gas");
+    digitalWrite(alarmMQ2,LOW);
+  }else{
+    Serial.println("Ada gas");
+    digitalWrite(alarmMQ2,HIGH);
   }
 
+  // Pembacaan sensor Api
+  int api = digitalRead(sensorApi);
+  Serial.println("Keadaan Sensor Api: ");
+  if (api == HIGH){
+    Serial.println("Ada api");
+    digitalWrite(alarmApi,HIGH);
+  }else{
+    Serial.println("Tidak ada api");
+    digitalWrite(alarmApi,LOW);
+  }
 
-  // Lampu menggunakan LDR
+  // Pembacaan Magnet Switch
+  int kondisiMagnet1 = digitalRead(MagnetSw1);
+
+  if (kondisiMagnet1 == HIGH){
+    digitalWrite(alarmSw,HIGH);
+    Serial.println("Alarm ON");
+  }else {
+    digitalWrite(alarmSw,LOW);
+    Serial.println("Alarm OFF");
+  }
+
+  // Pembacaan sensor DHT11
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+  Serial.println("Pembacaan Suhu & Kelembapan: ");
+  Serial.println("Suhu: "+String(temp)+"C");
+  Serial.println("Kelembapan: "+String(hum)+"%");
+  if (temp>=28){
+    Serial.println("Kipas Menyala");
+    digitalWrite(pinKipas,HIGH);
+  }else{
+    Serial.println("Kipas Mati");
+    digitalWrite(pinKipas,LOW);
+  }
+
+  // Pembacaan Sensor LDR
   const float GAMMA = 0.7;
   const float RL10 = 50;
 
-  float ldrVal = analogRead(LDR);
+  float ldrVal = analogRead(LDRPIN);
   float voltage = ldrVal / 4096*5;
   float resistance = 2000*voltage/(1-voltage/5);
   float lux = pow(RL10*1e3*pow(18, GAMMA)/resistance, (1/GAMMA));
-  Serial.println(ldrVal);
-  Serial.println(voltage);
-  Serial.println(lux);
-  Serial.println();
 
-  if (ldrVal<200){ 
-    digitalWrite(lampu1,HIGH);
-    digitalWrite(lampu2,HIGH);
+  Serial.println("Pembacaan sensor LDR");
+  Serial.println("Raw: "+String(ldrVal));
+  Serial.println("Voltage: "+String(voltage));
+  Serial.println("Hambatan: "+String(lux));
+
+  if (voltage<1){
+    digitalWrite(lampuHal,HIGH);
   }else{
-    digitalWrite(lampu1,LOW);
-    digitalWrite(lampu2,LOW);
+    digitalWrite(lampuHal,LOW);
   }
-  // Lampu menggunakan LDR
 
-  // Sensor DHT11
-  float temp = dht.readTemperature();
-  float hum = dht.readHumidity();
-
-  Serial.println("Temperature: "+String(temp)+"C");
-  Serial.println("Humidity: "+String(hum)+"%");
   Serial.println();
-
-  // Sensor Gas MQ2
-  
+  delay(1000);
 }
