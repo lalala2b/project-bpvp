@@ -108,7 +108,7 @@ void loop() {
   Serial.println("Voltage: "+String(voltage));
   Serial.println("Hambatan: "+String(lux));
 
-  if (voltage<1){
+  if (voltage<0.7){
     digitalWrite(lampuHal,HIGH);
   }else{
     digitalWrite(lampuHal,LOW);
