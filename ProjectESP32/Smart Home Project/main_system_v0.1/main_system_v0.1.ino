@@ -170,7 +170,7 @@ void loop() {
         bot.sendMessage(user_id, pesanSuhu);
       }
     }else { // Jika id pengirim tidak sesuai dengan id yg ada
-      bot.sendMessage(msg.sender.id, "Not authorize, your id is "+String(msg.sender.id));
+      bot.sendMessage(msg.sender.id, "Not authorize, your id is "+msg.sender.id);
     }
   }
 
