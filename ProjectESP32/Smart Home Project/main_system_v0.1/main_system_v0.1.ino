@@ -6,7 +6,6 @@
 #include <BlynkSimpleEsp32.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
-BlynkTimer timer;
 
 // Library
 #include <DHT.h>
@@ -49,11 +48,13 @@ DHT dht(DHTPIN,DHTType);
 
 void setup() {
   Serial.begin(9600);
+  Blynk.run();
 
   // Setup
   dht.begin();
   bot.wifiConnect(ssid,pass);
   bot.setTelegramToken(BOTtoken);
+  Blynk.begin(auth,ssid,pass);
 
   // Mode Pin INPUT
   pinMode(MQ2PIN, INPUT); // Sensor MQ2
