@@ -53,6 +53,20 @@ WiFiClientSecure client;
 
 #define lampuHal 5 // Lampu Halaman
 
+// Pin Lampu
+/* unfinished
+#define LampuRT
+#define LampuK1
+#define LampuKM
+#define lampuD
+#define lampuLT2
+#define lampuK2
+#define lampuK3
+
+#define Panel1
+#define Panel2
+*/
+
 // Variable
 #define DHTType DHT11
 DHT dht(DHTPIN,DHTType);
@@ -61,13 +75,6 @@ int MagnetTimer = 15;
 int MagnetNotif = HIGH;
 
 int modeKipas = HIGH;
-/*
-void TeleTimer(time,pesan){
-  if (time==15){
-    bot.sendMessage(user_id,pesan);
-    timer = 0;
-  }
-}*/
 
 void setup() {
   Serial.begin(9600);
