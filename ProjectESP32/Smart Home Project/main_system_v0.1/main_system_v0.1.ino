@@ -1,3 +1,13 @@
+// BLYNK Setup
+#define BLYNK_PRINT Serial
+#define BLYNK_TEMPLATE_ID "TMPL6VP7zHhbO"
+#define BLYNK_TEMPLATE_NAME "PROJECT TECH1"
+#define BLYNK_AUTH_TOKEN "aLI6cOE9eubSCW2P4hbwyvkRZ9cAg4Wk"
+#include <BlynkSimpleEsp32.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+BlynkTimer timer;
+
 // Library
 #include <DHT.h>
 #include <WiFi.h>
@@ -97,7 +107,7 @@ void loop() {
   int kondisiMagnet1 = digitalRead(MagnetSw1);
 
   if (kondisiMagnet1 == HIGH){
-    bot.sendMessage(user_id,"Pintu terbuka"); // Test telegram
+    //bot.sendMessage(user_id,"Pintu terbuka"); // Test telegram
     digitalWrite(alarmSw,HIGH);
     Serial.println("Alarm ON");
   }else {
@@ -111,6 +121,10 @@ void loop() {
   Serial.println("Pembacaan Suhu & Kelembapan: ");
   Serial.println("Suhu: "+String(temp)+"C");
   Serial.println("Kelembapan: "+String(hum)+"%");
+  // Blynk Update
+  Blynk.virtualWrite(V0, temp);
+  Blynk.virtualWrite(V1, hum);
+  // Kipas
   if (temp>=28){
     Serial.println("Kipas Menyala");
     digitalWrite(pinKipas,HIGH);
@@ -149,10 +163,10 @@ void loop() {
       if (msg.text.equals("/start")){
         bot.sendMessage(user_id, "Welcome");
       }else if (msg.text.equals("/cek_status")){  // Menampilkan keadaan rumah
-        bot.sendMessage(user_id,"kosong");
+        bot.sendMessage(user_id,"Kosong");
       }else if (msg.text.equals("/cek_suhu")){ // Menampilkan suhu dan kelembapan saat ini
-        String pesanSuhu = "Suhu: "+String(temp);
-        pesanSuhu += "\nKelembapan: "+String(hum);
+        String pesanSuhu = "Suhu: "+String(temp)+"C";
+        pesanSuhu += "\nKelembapan: "+String(hum)+"%";
         bot.sendMessage(user_id, pesanSuhu);
       }
     }else { // Jika id pengirim tidak sesuai dengan id yg ada
