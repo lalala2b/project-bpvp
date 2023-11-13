@@ -97,6 +97,7 @@ void loop() {
   int kondisiMagnet1 = digitalRead(MagnetSw1);
 
   if (kondisiMagnet1 == HIGH){
+    bot.sendMessage(user_id,"Pintu terbuka"); // Test telegram
     digitalWrite(alarmSw,HIGH);
     Serial.println("Alarm ON");
   }else {
@@ -143,17 +144,18 @@ void loop() {
   // Setting Telegram
   TBMessage msg;
 
-  if (CTBotMessageText == bot.getNewMessage(msg)){
+  if (CTBotMessageText == bot.getNewMessage(msg)){ // Memeriksa id pengirim pesan
     if (msg.sender.id == user_id){
       if (msg.text.equals("/start")){
         bot.sendMessage(user_id, "Welcome");
-      }
-      if (msg.text.equals("/cek_suhu")){
+      }else if (msg.text.equals("/cek_status")){  // Menampilkan keadaan rumah
+        bot.sendMessage(user_id,"kosong");
+      }else if (msg.text.equals("/cek_suhu")){ // Menampilkan suhu dan kelembapan saat ini
         String pesanSuhu = "Suhu: "+String(temp);
         pesanSuhu += "\nKelembapan: "+String(hum);
         bot.sendMessage(user_id, pesanSuhu);
       }
-    }else {
+    }else { // Jika id pengirim tidak sesuai dengan id yg ada
       bot.sendMessage(msg.sender.id, "Not authorize, your id is "+String(msg.sender.id));
     }
   }
