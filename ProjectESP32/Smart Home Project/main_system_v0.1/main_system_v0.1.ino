@@ -3,16 +3,25 @@
 #define BLYNK_TEMPLATE_ID "TMPL6VP7zHhbO"
 #define BLYNK_TEMPLATE_NAME "PROJECT TECH1"
 #define BLYNK_AUTH_TOKEN "aLI6cOE9eubSCW2P4hbwyvkRZ9cAg4Wk"
+//library
 #include <BlynkSimpleEsp32.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
+BlynkTimer timer;
+
+// Setup telegram bot
+#define BOTtoken "6741323250:AAF6Ag62a6mbxs0IsmN9IcCF2NB4FSE6xDw"
+#define user_id 5194206843
+//library
+#include <CTBot.h>
+#include <ArduinoJson.h>
+
+CTBot bot;
 
 // Library
 #include <DHT.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <CTBot.h>
-#include <ArduinoJson.h>
 
 // Setup koneksi WiFi
 const char* ssid = "lalala";
@@ -20,11 +29,13 @@ const char* pass = "00000000";
 
 WiFiClientSecure client;
 
-// Setup telegram bot
-#define BOTtoken "6741323250:AAF6Ag62a6mbxs0IsmN9IcCF2NB4FSE6xDw"
-#define user_id 5194206843
-
-CTBot bot;
+// Virtual Pin Blynk
+#define vpinTemp V0
+#define vpinHum V1
+#define vpinRaw V2
+#define vpinVolt V3
+#define vpinLux V4
+#define vLampuTeras V5
 
 // Pin Sensor
 #define MQ2PIN 14 // Sensor MQ2 Digital
@@ -46,15 +57,27 @@ CTBot bot;
 #define DHTType DHT11
 DHT dht(DHTPIN,DHTType);
 
+int MagnetTimer = 15;
+int MagnetNotif = HIGH;
+
+int modeKipas = HIGH;
+/*
+void TeleTimer(time,pesan){
+  if (time==15){
+    bot.sendMessage(user_id,pesan);
+    timer = 0;
+  }
+}*/
+
 void setup() {
   Serial.begin(9600);
-  Blynk.run();
+  
 
   // Setup
-  dht.begin();
-  bot.wifiConnect(ssid,pass);
-  bot.setTelegramToken(BOTtoken);
-  Blynk.begin(auth,ssid,pass);
+  dht.begin(); // DHT
+  bot.wifiConnect(ssid,pass); // WiFi
+  bot.setTelegramToken(BOTtoken); // Telegram
+  Blynk.begin(auth,ssid,pass); // Blynk
 
   // Mode Pin INPUT
   pinMode(MQ2PIN, INPUT); // Sensor MQ2
@@ -76,8 +99,10 @@ void setup() {
 
   if (bot.testConnection()){
 		Serial.println("\nConnecting success");
+    bot.sendMessage(user_id,"Bot siap digunakan. /start");
   }else {
 		Serial.println("\nConnecting fail, please reset");
+    bot.sendMessage(user_id,"Gagal terhubung, silakan reset");
   }
 }
 
@@ -90,6 +115,7 @@ void loop() {
     digitalWrite(alarmMQ2,LOW);
   }else{
     Serial.println("Ada gas");
+    bot.sendMessage(user_id,"Ada gas!!!");
     digitalWrite(alarmMQ2,HIGH);
   }
 
@@ -97,6 +123,7 @@ void loop() {
   int api = digitalRead(sensorApi);
   Serial.println("Keadaan Sensor Api: ");
   if (api == HIGH){
+    bot.sendMessage(user_id,"Ada api!!!");
     Serial.println("Ada api");
     digitalWrite(alarmApi,HIGH);
   }else{
@@ -105,10 +132,8 @@ void loop() {
   }
 
   // Pembacaan Magnet Switch
-  int kondisiMagnet1 = digitalRead(MagnetSw1);
-
-  if (kondisiMagnet1 == HIGH){
-    //bot.sendMessage(user_id,"Pintu terbuka"); // Test telegram
+  if (digitalRead(MagnetSw1) == HIGH && MagnetNotif == HIGH){
+    bot.sendMessage(user_id,"Pintu terbuka!!!"); // Test telegram
     digitalWrite(alarmSw,HIGH);
     Serial.println("Alarm ON");
   }else {
@@ -119,14 +144,12 @@ void loop() {
   // Pembacaan sensor DHT11
   float temp = dht.readTemperature();
   float hum = dht.readHumidity();
-  Serial.println("Pembacaan Suhu & Kelembapan: ");
-  Serial.println("Suhu: "+String(temp)+"C");
-  Serial.println("Kelembapan: "+String(hum)+"%");
+
   // Blynk Update
-  Blynk.virtualWrite(V0, temp);
-  Blynk.virtualWrite(V1, hum);
+  Blynk.virtualWrite(vpinTemp, temp);
+  Blynk.virtualWrite(vpinHum, hum);
   // Kipas
-  if (temp>=28){
+  if (temp>=28 && modeKipas==HIGH){
     Serial.println("Kipas Menyala");
     digitalWrite(pinKipas,HIGH);
   }else{
@@ -143,16 +166,19 @@ void loop() {
   float resistance = 2000*voltage/(1-voltage/5);
   float lux = pow(RL10*1e3*pow(18, GAMMA)/resistance, (1/GAMMA));
 
-  Serial.println("Pembacaan sensor LDR");
-  Serial.println("Raw: "+String(ldrVal));
-  Serial.println("Voltage: "+String(voltage));
-  Serial.println("Hambatan: "+String(lux));
-
+  String Halaman;
   if (voltage<0.7){
     digitalWrite(lampuHal,HIGH);
+    Halaman = "Nyala";
   }else{
     digitalWrite(lampuHal,LOW);
+    Halaman = "Mati";
   }
+  //BLYNK Update
+  Blynk.virtualWrite(vpinRaw,ldrVal);
+  Blynk.virtualWrite(vpinVolt,voltage);
+  Blynk.virtualWrite(vpinLux,lux);
+  Blynk.virtualWrite(vLampuTeras,digitalRead(lampuHal));
 
   Serial.println();
   
@@ -161,17 +187,47 @@ void loop() {
 
   if (CTBotMessageText == bot.getNewMessage(msg)){ // Memeriksa id pengirim pesan
     if (msg.sender.id == user_id){
+
       if (msg.text.equals("/start")){
-        bot.sendMessage(user_id, "Welcome");
+        String pesanMasuk = "Selamat Datang, "+msg.sender.username+".";
+        pesanMasuk += "\n\nBerikut daftar perintah yang dapat digunakan: ";
+        pesanMasuk += "\n/start - pesan masuk dan daftar perintah.";
+        pesanMasuk += "\n/mode_alarm - mengubah mode alarm (on/off).";
+        pesanMasuk += "\n/mode_kipas - mengubah mode otomasi kipas (on/off)";
+        pesanMasuk += "\n/cek_status - cek keadaan lampu dirumah dan kipas.";
+        pesanMasuk += "\n/cek_data - cek suhu dan kelembapan saat ini.";
+        bot.sendMessage(user_id, pesanMasuk);
+
+      }else if (msg.text.equals("/mode_alarm")){
+        MagnetNotif = !MagnetNotif;
+        bot.sendMessage(user_id,"mode alarm beralih menjadi: "+String(MagnetNotif)+"(default 1)");
+
+      }else if(msg.text.equals("/mode_kipas")){
+        modeKipas = !modeKipas;
+        bot.sendMessage(user_id,"mode kipas beralih menjadi: "+String(modeKipas)+"(default 1)");
+
       }else if (msg.text.equals("/cek_status")){  // Menampilkan keadaan rumah
-        bot.sendMessage(user_id,"Kosong");
-      }else if (msg.text.equals("/cek_suhu")){ // Menampilkan suhu dan kelembapan saat ini
-        String pesanSuhu = "Suhu: "+String(temp)+"C";
-        pesanSuhu += "\nKelembapan: "+String(hum)+"%";
-        bot.sendMessage(user_id, pesanSuhu);
+        String cekStatus = "- Lampu teras depan: "+Halaman;
+        cekStatus += "\n- Mode alarm: "+String(MagnetNotif)+"(default 1)";
+        cekStatus += "\n- Mode Kipas: "+String(modeKipas)+"(default 1)";
+        bot.sendMessage(user_id,cekStatus);
+
+      }else if (msg.text.equals("/cek_data")){ // Menampilkan suhu dan kelembapan saat ini
+        String pesanData = "Data DHT";
+        pesanData += "\nSuhu: "+String(temp)+"C";
+        pesanData += "\nKelembapan: "+String(hum)+"%";
+        pesanData += "\n\nData LDR";
+        pesanData += "\nMentah: "+String(ldrVal);
+        pesanData += "\nTegangan: "+String(voltage);
+        pesanData += "\nHambatan: "+String(lux);
+        bot.sendMessage(user_id, pesanData);
+
+      }else{
+        bot.sendMessage(user_id, "Maaf, perintah tidak dikenal.\nSilakan gunakan perintah /start untuk melihat daftar perintah.");
+
       }
     }else { // Jika id pengirim tidak sesuai dengan id yg ada
-      bot.sendMessage(msg.sender.id, "Not authorize, your id is "+msg.sender.id);
+      bot.sendMessage(msg.sender.id, "Maaf, anda tidak memiliki izin.");
     }
   }
 
