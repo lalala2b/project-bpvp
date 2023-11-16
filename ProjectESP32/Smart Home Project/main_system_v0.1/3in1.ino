@@ -9,11 +9,6 @@
 #include <DHT.h>
 #include <BlynkSimpleEsp32.h>
 
-/*
-#define BLYNK_TEMPLATE_ID "TMPL6VP7zHhbO"
-#define BLYNK_TEMPLATE_NAME "PROJECT TECH1"
-#define BLYNK_AUTH_TOKEN "aLI6cOE9eubSCW2P4hbwyvkRZ9cAg4Wk"
-*/
 char auth[] = BLYNK_AUTH_TOKEN;
 BlynkTimer timer;
 
@@ -24,6 +19,12 @@ CTBot bot;
 
 const char* ssid = "lalala";
 const char* pass = "00000000";
+// esp32 pin used
+#define pinLDR 34
+#define pinDHT 23
+#define pinAPI 22
+#define pinGAS 1
+#define pinDoor 3
 
 #define switchRU 13
 #define switchK1 12
@@ -39,6 +40,10 @@ const char* pass = "00000000";
 #define lampuK2 19
 #define lampuK3 21
 
+#define lampuTer 15
+#define pinKipas 2
+#define pinAlarm 4
+// virtual pin
 #define virtualRU V0
 #define virtualK1 V1
 #define virtualKM V2
@@ -46,12 +51,35 @@ const char* pass = "00000000";
 #define virtualK2 V4
 #define virtualK3 V5
 
+#define virtualTer V6
+#define virtualLDR V7
+#define virtualVolt V8
+#define virtualRaw V9
+
+#define virtualKipas V10
+#define virtualKS V11
+#define virtualTemp V12
+#define virtualHum V13
+
+#define virtualDoor V14
+#define virtualSD V15
+
+#define virtualAPI V16
+#define virtualGAS V17
+// state variable
 int stateRU = 0;
 int stateK1 = 0;
 int stateKM = 0;
 int stateHall = 0;
 int stateK2 = 0;
 int stateK3 = 0;
+
+int stateLDR = 0;
+int stateKipas = 0;
+int stateDoor = 0;
+// other var
+#define DHTtype DHT11
+DHT dht(pinDHT,DHTtype);
 
 BLYNK_CONNECTED(){
   Blynk.syncVirtual(virtualRU);
@@ -60,6 +88,9 @@ BLYNK_CONNECTED(){
   Blynk.syncVirtual(virtualHall);
   Blynk.syncVirtual(virtualK2);
   Blynk.syncVirtual(virtualK3);
+
+  Blynk.syncVirtual(virtualLDR);
+  Blynk.syncVirtual(virtualKS);
 }
 
 BLYNK_WRITE(virtualRU){
@@ -82,9 +113,19 @@ BLYNK_WRITE(virtualK2){
   stateK2 = param.asInt();
   digitalWrite(lampuK2,stateK2);
 }
-BLYNK_WRITE(virtaulK3){
+BLYNK_WRITE(virtualK3){
   stateK3 = param.asInt();
   digitalWrite(lampuK3,stateK3);
+}
+
+BLYNK_WRITE(virtualKS){
+  stateKipas = param.asInt();
+}
+BLYNK_WRITE(virtualLDR){
+  stateLDR = param.asInt();
+}
+BLYNK_WRITE(virtualSD){
+  stateDoor = param.asInt();
 }
 
 void setup(){
@@ -93,6 +134,7 @@ void setup(){
   bot.wifiConnect(ssid,pass);
   bot.setTelegramToken(BOTtoken);
   Blynk.begin(auth,ssid,pass);
+  dht.begin();
 
   pinMode(lampuRU,OUTPUT);
   pinMode(lampuK1,OUTPUT);
@@ -100,6 +142,14 @@ void setup(){
   pinMode(lampuHall,OUTPUT);
   pinMode(lampuK2,OUTPUT);
   pinMode(lampuK3,OUTPUT);
+  pinMode(lampuTer,OUTPUT);
+  pinMode(pinKipas,OUTPUT);
+  pinMode(pinAlarm,OUTPUT);
+
+  pinMode(pinLDR,INPUT);
+  pinMode(pinDoor,INPUT);
+  pinMode(pinGAS,INPUT);
+  pinMode(pinAPI,INPUT);
 
   pinMode(switchRU,INPUT_PULLDOWN);
   pinMode(switchK1,INPUT_PULLDOWN);
@@ -117,6 +167,56 @@ void setup(){
 }
 
 void loop(){
+  // Security
+  int Api = digitalRead(pinAPI);
+  int Gas = digitalRead(pinGAS);
+  int Door = digitalRead(pinDoor);
+
+  if (Api==HIGH){
+    digitalWrite(pinAlarm,HIGH);
+  }else if (Gas==HIGH){
+    digitalWrite(pinAlarm,HIGH);
+  }else if (Door==HIGH && stateDoor==HIGH){
+    digitalWrite(pinAlarm,HIGH);
+  }else{
+    digitalWrite(pinAlarm,LOW);
+  }
+  Blynk.virtualWrite(virtualAPI,pinAPI);
+  Blynk.virtualWrite(virtualGAS,pinGAS);
+  Blynk.virtualWrite(virtualDoor,pinDoor);
+
+  // Sensor DHT
+  float temp = dht.readTemperature();
+  float hum = dht.readHumidity();
+
+  if (temp>=28 && stateKipas==HIGH){
+    digitalWrite(pinKipas,HIGH);
+  }else{
+    digitalWrite(pinKipas,LOW);
+  }
+  Blynk.virtualWrite(virtualKipas,digitalRead(pinKipas));
+  Blynk.virtualWrite(virtualTemp,temp);
+  Blynk.virtualWrite(virtualHum,hum);
+
+  // Sensor LDR
+  const float GAMMA = 0.7;
+  const float RL10 = 50;
+
+  float ldrVal = analogRead(pinLDR);
+  float voltage = ldrVal / 4096*5;
+  float resistance = 2000*voltage/(1-voltage/5);
+  float lux = pow(RL10*1e3*pow(18, GAMMA)/resistance, (1/GAMMA));
+
+  if (voltage<0.2 && stateLDR==HIGH){
+    digitalWrite(lampuTer,HIGH);
+  }else{
+    digitalWrite(lampuTer,LOW);
+  }
+  Blynk.virtualWrite(virtualTer,digitalRead(lampuTer));
+  Blynk.virtualWrite(virtualVolt,voltage);
+  Blynk.virtualWrite(virtualRaw,ldrVal);
+
+  // Switch
   if (digitalRead(switchRU)==HIGH){
     stateRU = !stateRU;
     digitalWrite(lampuRU,stateRU);
@@ -143,6 +243,7 @@ void loop(){
     Blynk.virtualWrite(virtualK3,stateK3);
   }
 
+  // Telegram
   TBMessage msg;
 
   if (CTBotMessageText == bot.getNewMessage(msg)){
@@ -178,6 +279,14 @@ void loop(){
         digitalWrite(lampuK3,stateK3);
         Blynk.virtualWrite(virtualK3,stateK3);
         bot.sendMessage(user_id,"success5");
+      }else if (msg.text.equals("/state_ldr")){
+        stateLDR = !stateLDR;
+        Blynk.virtualWrite(virtualLDR,stateLDR);
+        bot.sendMessage(user_id,"successLDR");
+      }else if (msg.text.equals("/state_door")){
+        stateDoor = !stateDoor;
+        Blynk.virtualWrite(virtualSD,stateDoor);
+        bot.sendMessage(user_id,"successDoor");
       }else{
         bot.sendMessage(user_id,"unknown command");
       }
