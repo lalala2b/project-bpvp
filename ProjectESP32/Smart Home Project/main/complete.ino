@@ -23,8 +23,8 @@ const char* pass = "00000000";
 #define pinLDR 34
 #define pinDHT 23
 #define pinAPI 22
-#define pinGAS 1
-#define pinDoor 3
+#define pinGAS 36
+#define pinDoor 39
 
 #define switchRU 13
 #define switchK1 12
@@ -174,13 +174,17 @@ void loop(){
 
   if (Api==HIGH){
     digitalWrite(pinAlarm,HIGH);
-  }else if (Gas==HIGH){
+    bot.sendMessage(user_id,"Ada api");
+  }else if (Gas==LOW){
     digitalWrite(pinAlarm,HIGH);
+    bot.sendMessage(user_id,"Ada gas");
   }else if (Door==HIGH && stateDoor==HIGH){
     digitalWrite(pinAlarm,HIGH);
+    bot.sendMessage(user_id,"pintu terbuka");
   }else{
     digitalWrite(pinAlarm,LOW);
   }
+
   Blynk.virtualWrite(virtualAPI,pinAPI);
   Blynk.virtualWrite(virtualGAS,pinGAS);
   Blynk.virtualWrite(virtualDoor,pinDoor);
@@ -221,26 +225,32 @@ void loop(){
     stateRU = !stateRU;
     digitalWrite(lampuRU,stateRU);
     Blynk.virtualWrite(virtualRU,stateRU);
+    delay(100);
   }else if (digitalRead(switchK1)==HIGH){
     stateK1 = !stateK1;
     digitalWrite(lampuK1,stateK1);
     Blynk.virtualWrite(virtualK1,stateK1);
+    delay(100);
   }else if (digitalRead(switchKM)==HIGH){
     stateKM = !stateKM;
     digitalWrite(lampuKM,stateKM);
     Blynk.virtualWrite(virtualKM,stateKM);
+    delay(100);
   }else if (digitalRead(switchHall)==HIGH){
     stateHall = !stateHall;
     digitalWrite(lampuHall,stateHall);
     Blynk.virtualWrite(virtualHall,stateHall);
+    delay(100);
   }else if (digitalRead(switchK2)==HIGH){
     stateK2 = !stateK2;
     digitalWrite(lampuK2,stateK2);
     Blynk.virtualWrite(virtualK2,stateK2);
+    delay(100);
   }else if (digitalRead(switchK3)==HIGH){
     stateK3 = !stateK3;
     digitalWrite(lampuK3,stateK3);
     Blynk.virtualWrite(virtualK3,stateK3);
+    delay(100);
   }
 
   // Telegram
@@ -248,47 +258,89 @@ void loop(){
 
   if (CTBotMessageText == bot.getNewMessage(msg)){
     if (msg.sender.id == user_id){
-      if (msg.text.equals("/lampu_utama")){
+      if (msg.text.equals("/start")){
+        String pesanStart = "Selamat datang"+msg.sender.username+
+                            "\n\nBerikut daftar perintah:"+
+                            "\n- /start - Daftar perintah"+
+                            "\n- /cek_lampu - Keadaan lampu"+
+                            "\n- /cek_data - Daftar data"+
+                            "\n- /lampu_utama - Atur lampu utama"+
+                            "\n- /lampu_kamar1 - Atur lampu kamar 1"+
+                            "\n- /lampu_kmandi - Atur lampu kamar mandi"+
+                            "\n- /lampu_hall - Atur lampu hall lt.2"+
+                            "\n- /lampu_kamar2 - Atur lampu kamar 2 lt.2"+
+                            "\n- /lampu_kamar3 - Atur lampu kamar 3 lt.3"+
+                            "\n- /state_ldr - Atur keadaan ldr"+
+                            "\n- /state_door - Atur keadaan alarm pintu";
+        bot.sendMessage(user_id,pesanStart);
+        delay(1000);
+      }else if (msg.text.equals("/cek_lampu")){
+        String cekLampu = "Keadaan lampu: (1=ON - 0=OFF)\n- Lampu Utama        : "+String(digitalRead(lampuRU))+
+                          "\n- Lampu Kamar 1      : "+String(digitalRead(lampuK1))+
+                          "\n- Lampu Kamar Mandi  : "+String(digitalRead(lampuKM))+
+                          "\n- Lampu Hall (lt2)   : "+String(digitalRead(lampuHall))+
+                          "\n- Lampu Kamar 2 (lt2): "+String(digitalRead(lampuK2))+
+                          "\n- Lampu Kamar 3 (lt2): "+String(digitalRead(lampuK3));
+        bot.sendMessage(user_id,cekLampu);
+        delay(1000);
+      }else if (msg.text.equals("/cek_data")){
+        String cekData = "Data DHT:\n- Suhu       : "+String(temp)+"C"+
+                          "\n- Kelembapan : "+String(hum)+"%"+
+                          "\n\n Data LDR:"+
+                          "\n- Raw        : "+String(ldrVal)+
+                          "\n- Voltage    : "+String(voltage)+"V"+
+                          "\n- Lux        : "+String(lux);
+        bot.sendMessage(user_id,cekData);
+        delay(1000);
+      }else if (msg.text.equals("/lampu_utama")){
         stateRU = !stateRU;
         digitalWrite(lampuRU,stateRU);
         Blynk.virtualWrite(virtualRU,stateRU);
         bot.sendMessage(user_id,"success");
-
+        delay(1000);
       }else if (msg.text.equals("/lampu_kamar1")){
         stateK1 = !stateK1;
         digitalWrite(lampuK1,stateK1);
         Blynk.virtualWrite(virtualK1,stateK1);
         bot.sendMessage(user_id,"success1");
+        delay(1000);
       }else if (msg.text.equals("/lampu_kmandi")){
         stateKM = !stateKM;
         digitalWrite(lampuKM,stateKM);
         Blynk.virtualWrite(virtualKM,stateKM);
         bot.sendMessage(user_id,"success2");
+        delay(1000);
       }else if (msg.text.equals("/lampu_hall")){
         stateHall = !stateHall;
         digitalWrite(lampuHall,stateHall);
         Blynk.virtualWrite(virtualHall,stateHall);
         bot.sendMessage(user_id,"success3");
+        delay(1000);
       }else if (msg.text.equals("/lampu_kamar2")){
         stateK2 = !stateK2;
         digitalWrite(lampuK2,stateK2);
         Blynk.virtualWrite(virtualK2,stateK2);
         bot.sendMessage(user_id,"success4");
+        delay(1000);
       }else if (msg.text.equals("/lampu_kamar3")){
         stateK3 = !stateK3;
         digitalWrite(lampuK3,stateK3);
         Blynk.virtualWrite(virtualK3,stateK3);
         bot.sendMessage(user_id,"success5");
+        delay(1000);
       }else if (msg.text.equals("/state_ldr")){
         stateLDR = !stateLDR;
         Blynk.virtualWrite(virtualLDR,stateLDR);
         bot.sendMessage(user_id,"successLDR");
+        delay(1000);
       }else if (msg.text.equals("/state_door")){
         stateDoor = !stateDoor;
         Blynk.virtualWrite(virtualSD,stateDoor);
         bot.sendMessage(user_id,"successDoor");
+        delay(1000);
       }else{
         bot.sendMessage(user_id,"unknown command");
+        delay(1000);
       }
     }
   }
