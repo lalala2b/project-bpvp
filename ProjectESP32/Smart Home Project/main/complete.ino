@@ -13,12 +13,12 @@ char auth[] = BLYNK_AUTH_TOKEN;
 BlynkTimer timer;
 
 #define BOTtoken "6741323250:AAF6Ag62a6mbxs0IsmN9IcCF2NB4FSE6xDw"
-#define user_id 5194206843
+#define user_id // isi user id telegram, contoh id 5194206843
 
 CTBot bot;
 
-const char* ssid = "lalala";
-const char* pass = "00000000";
+const char* ssid = "wifi";
+const char* pass = "pass";
 // esp32 pin used
 #define pinLDR 34
 #define pinDHT 23
