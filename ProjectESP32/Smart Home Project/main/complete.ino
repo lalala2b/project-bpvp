@@ -172,6 +172,7 @@ void loop(){
   int Gas = digitalRead(pinGAS);
   int Door = digitalRead(pinDoor);
 
+// ERROR DISINI
   if (Api==HIGH){
     digitalWrite(pinAlarm,HIGH);
     bot.sendMessage(user_id,"Ada api");
@@ -225,32 +226,32 @@ void loop(){
     stateRU = !stateRU;
     digitalWrite(lampuRU,stateRU);
     Blynk.virtualWrite(virtualRU,stateRU);
-    delay(100);
+    delay(200);
   }else if (digitalRead(switchK1)==HIGH){
     stateK1 = !stateK1;
     digitalWrite(lampuK1,stateK1);
     Blynk.virtualWrite(virtualK1,stateK1);
-    delay(100);
+    delay(200);
   }else if (digitalRead(switchKM)==HIGH){
     stateKM = !stateKM;
     digitalWrite(lampuKM,stateKM);
     Blynk.virtualWrite(virtualKM,stateKM);
-    delay(100);
+    delay(200);
   }else if (digitalRead(switchHall)==HIGH){
     stateHall = !stateHall;
     digitalWrite(lampuHall,stateHall);
     Blynk.virtualWrite(virtualHall,stateHall);
-    delay(100);
+    delay(200);
   }else if (digitalRead(switchK2)==HIGH){
     stateK2 = !stateK2;
     digitalWrite(lampuK2,stateK2);
     Blynk.virtualWrite(virtualK2,stateK2);
-    delay(100);
+    delay(200);
   }else if (digitalRead(switchK3)==HIGH){
     stateK3 = !stateK3;
     digitalWrite(lampuK3,stateK3);
     Blynk.virtualWrite(virtualK3,stateK3);
-    delay(100);
+    delay(200);
   }
 
   // Telegram
@@ -297,50 +298,50 @@ void loop(){
         digitalWrite(lampuRU,stateRU);
         Blynk.virtualWrite(virtualRU,stateRU);
         bot.sendMessage(user_id,"success");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/lampu_kamar1")){
         stateK1 = !stateK1;
         digitalWrite(lampuK1,stateK1);
         Blynk.virtualWrite(virtualK1,stateK1);
         bot.sendMessage(user_id,"success1");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/lampu_kmandi")){
         stateKM = !stateKM;
         digitalWrite(lampuKM,stateKM);
         Blynk.virtualWrite(virtualKM,stateKM);
         bot.sendMessage(user_id,"success2");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/lampu_hall")){
         stateHall = !stateHall;
         digitalWrite(lampuHall,stateHall);
         Blynk.virtualWrite(virtualHall,stateHall);
         bot.sendMessage(user_id,"success3");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/lampu_kamar2")){
         stateK2 = !stateK2;
         digitalWrite(lampuK2,stateK2);
         Blynk.virtualWrite(virtualK2,stateK2);
         bot.sendMessage(user_id,"success4");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/lampu_kamar3")){
         stateK3 = !stateK3;
         digitalWrite(lampuK3,stateK3);
         Blynk.virtualWrite(virtualK3,stateK3);
         bot.sendMessage(user_id,"success5");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/state_ldr")){
         stateLDR = !stateLDR;
         Blynk.virtualWrite(virtualLDR,stateLDR);
         bot.sendMessage(user_id,"successLDR");
-        delay(1000);
+        delay(200);
       }else if (msg.text.equals("/state_door")){
         stateDoor = !stateDoor;
         Blynk.virtualWrite(virtualSD,stateDoor);
         bot.sendMessage(user_id,"successDoor");
-        delay(1000);
+        delay(200);
       }else{
         bot.sendMessage(user_id,"unknown command");
-        delay(1000);
+        delay(200);
       }
     }
   }
