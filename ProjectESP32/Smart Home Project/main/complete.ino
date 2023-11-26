@@ -10,7 +10,6 @@
 #include <BlynkSimpleEsp32.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
-BlynkTimer timer;
 
 #define BOTtoken "6741323250:AAF6Ag62a6mbxs0IsmN9IcCF2NB4FSE6xDw"
 #define user_id // isi user id telegram, contoh id 5194206843
@@ -185,6 +184,7 @@ void loop(){
   }else{
     digitalWrite(pinAlarm,LOW);
   }
+// SAMPAI SINI
 
   Blynk.virtualWrite(virtualAPI,pinAPI);
   Blynk.virtualWrite(virtualGAS,pinGAS);
@@ -347,5 +347,4 @@ void loop(){
   }
   
   Blynk.run();
-  timer.run();
 }
